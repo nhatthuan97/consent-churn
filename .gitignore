@@ -1,0 +1,25 @@
+# the paper itself is not published in this repo (under review)
+paper/
+
+# raw data (auto-downloaded from the UCI repository on first run)
+code/data/*
+!code/data/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.toc
