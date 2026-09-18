@@ -31,3 +31,6 @@ baseline_and_federated_methods.py
 baseline_full_scale_accuracy.py
 consent_churn_study.py
 mlp_amplification.py
+
+# LaTeX build artifacts inside paper/ (paper/ itself is already ignored)
+paper/tables/

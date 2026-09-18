@@ -81,19 +81,18 @@ save(fig, "ceiling.png")
 
 
 # --------------------------------------------------------------- fl methods --
-# Executed notebook results: AUROC by aggregation method and Dirichlet alpha.
+# Read from the run, not transcribed by hand: federated_methods.py writes this
+# JSON. Transcribed values go stale silently the moment the experiment changes.
 METHODS = ["fedavg", "fedprox", "fedavgm", "fedadam", "scaffold"]
-FL = {                       # alpha -> {method: AUROC}
-    "10.0": dict(zip(METHODS, [0.6689, 0.6682, 0.6673, 0.6671, 0.6700])),
-    "0.5":  dict(zip(METHODS, [0.6677, 0.6669, 0.6669, 0.6655, 0.6689])),
-    "0.1":  dict(zip(METHODS, [0.6662, 0.6664, 0.6666, 0.6665, 0.6246])),
-}
+_fm = json.loads((RESULTS / "federated_methods_results.json").read_text())
+FL = {a: {m: v[m] for m in METHODS} for a, v in _fm["alphas"].items()}
 alphas = ["10.0", "0.5", "0.1"]
 xlab = ["$\\alpha$=10  (near-IID)", "$\\alpha$=0.5  (moderate)",
         "$\\alpha$=0.1  (severe)"]
 fig, ax = plt.subplots(figsize=(8.6, 4.4))
 x = np.arange(len(alphas))
-ceil_line = ax.axhline(0.6662, color=INK, lw=1, ls="--", zorder=1)
+_lrceil = [r["AUROC"] for r in base["ranking"] if r["model"].startswith("LogReg")][0]
+ceil_line = ax.axhline(_lrceil, color=INK, lw=1, ls="--", zorder=1)
 for m in METHODS:
     vals = [FL[a][m] for a in alphas]
     hot = m == "scaffold"
@@ -105,7 +104,7 @@ for m in METHODS:
                     textcoords="offset points", va="center", fontsize=12,
                     color=CORAL, fontweight="bold")
 # the four indistinguishable methods are labelled as a cluster, not individually
-ax.annotate("0.6662–0.6666", (x[-1], 0.6664), xytext=(12, 7),
+ax.annotate(f"{_lrceil:.4f}–{max(FL['0.1'].values()):.4f}", (x[-1], 0.6664), xytext=(12, 7),
             textcoords="offset points", va="center", fontsize=10.5, color=GRAY)
 ax.annotate("SCAFFOLD collapses:\ncontrol variates fail over\nfew, small, extreme silos",
             (1.93, 0.6280), xytext=(-34, 30), textcoords="offset points", ha="right",
@@ -121,7 +120,7 @@ from matplotlib.lines import Line2D
 ax.legend([Line2D([], [], color=GRAY, lw=2, marker="o", alpha=0.6),
            Line2D([], [], color=CORAL, lw=3, marker="o"), ceil_line],
           ["FedAvg / FedProx / FedAvgM / FedAdam — indistinguishable",
-           "SCAFFOLD", "centralized averageable ceiling (0.6662)"],
+           "SCAFFOLD", f"centralized averageable ceiling ({_lrceil:.4f})"],
           frameon=False, loc="lower left", fontsize=10.5,
           bbox_to_anchor=(-0.01, -0.02))
 save(fig, "fl_methods.png")
@@ -269,7 +268,7 @@ ax.tick_params(axis="y", length=0)
 ax.spines["left"].set_visible(False)
 handles = [plt.Rectangle((0, 0), 1, 1, color=GRAY),
            plt.Rectangle((0, 0), 1, 1, color=CORAL)]
-ax.legend(handles, ["LogReg client (0.666 centralized)",
+ax.legend(handles, [f"LogReg client ({_lrceil:.3f} centralized)",
                     "MLP client, 64 hidden units (0.670 centralized)"],
           frameon=False, loc="upper left", fontsize=10,
           bbox_to_anchor=(-0.015, 1.03))

@@ -184,9 +184,22 @@ if __name__ == "__main__":
     d = load_split_standardize()
     Xtr, ytr, Xte, yte, nf = d["Xtr"], d["ytr"], d["Xte"], d["yte"], d["nf"]
 
+    import json
+    from experiment_setup import results_path
+
+    out = {}
     for alpha in (10.0, 0.5, 0.1):
         silos = partition(ytr, 3, alpha, 0)
         print(f"\nalpha={alpha}")
+        out[str(alpha)] = {}
         for meth in METHODS:
             p_ = federated_train(Xtr, ytr, silos, Xte, method=meth, nf=nf, seed=0)
-            print(f"  {meth:<10s} AUROC={roc_auc_score(yte, p_):.4f}")
+            auroc = float(roc_auc_score(yte, p_))
+            out[str(alpha)][meth] = auroc
+            print(f"  {meth:<10s} AUROC={auroc:.4f}")
+
+    # Persist rather than only print: the aggregation-method figure used to carry
+    # these numbers transcribed by hand, which silently goes stale.
+    dest = results_path("federated_methods_results.json")
+    dest.write_text(json.dumps(dict(alphas=out, k=3, seed=0, rounds=40), indent=1))
+    print(f"\nwrote {dest}")
