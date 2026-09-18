@@ -29,21 +29,57 @@ A growing literature adds blockchain consent layers to federated healthcare
 ML so patients can revoke participation at any time — but nobody has measured
 what that costs in model utility. We quantify it on 30-day readmission
 prediction (UCI Diabetes 130-US-hospitals, ~102k real encounters, K=3 silos,
-5 seeds), decomposing "consent churn" into three physically distinct regimes:
+**30 seeds**), decomposing "consent churn" into three physically distinct
+regimes:
 
-| Regime (70% churn / max stress) | ΔAUROC |
+| Regime (70% churn / max stress) | ΔAUROC (sd) |
 |---|---|
-| Transient (withdraw, later rejoin) | −0.003 (≈ free) |
-| Permanent, random | −0.007 (≈ free) |
-| Permanent, biased (positives leave first) | −0.021 (~3×) |
-| Whole-silo exit, positive-heavy (α=0.1) | **−0.059** (~6×) |
-| Count-matched random control (same headcount) | −0.039 |
+| Transient (withdraw, later rejoin) | −0.000 (0.005) — free |
+| Permanent, random | −0.007 (0.006) |
+| Permanent, biased (positives leave first) | −0.018 (0.017) — ~2.5× |
+| Whole-silo exit, positive-heavy (α=0.1) | **−0.053** (0.045) |
+| Whole-silo exit, positive-light (α=0.1) | −0.001 (0.018) |
+| Count-matched random control (same headcount) | −0.015 (0.028) |
 
-**Headline:** removing an entire positive-heavy silo costs −0.059 AUROC while
-removing the *same number* of patients at random costs −0.039 — the damage is
-carried by *who* leaves, not *how many* leave. A 200-run rerun with a
-higher-capacity MLP client reproduces every delta within one standard
-deviation: the cost structure is model-independent.
+**Headline.** Removing an entire positive-heavy silo costs −0.053 AUROC, while
+removing the *same number* of patients drawn at random costs −0.015 — **3.6×
+less**. The damage is carried by *who* leaves, not *how many*.
+
+The two conditions share a seed, so they share a partition and remove an
+identical number of patients: they are paired observations, and the contrast is
+tested per seed rather than read off two marginal means.
+
+| Isolation test (α=0.1, logreg) | |
+|---|---|
+| Paired difference | **−0.038** (sd 0.046, n=30) |
+| 95% CI | [−0.055, −0.021] — excludes zero |
+| Paired t-test | t = −4.49, **p = 0.0001** |
+| Wilcoxon signed-rank | **p = 0.0001** |
+| Seeds in the predicted direction | 23/30 |
+
+The effect also holds at milder skew (α=0.5: paired difference −0.008,
+p = 0.0075) and under the higher-capacity client (MLP, α=0.1: −0.031,
+p = 0.0002), so it is not an artifact of one skew level or one model class.
+
+**Why 30 seeds.** The paired standard deviation here is roughly 0.046 — several
+times the effect itself. At the 5 seeds used in an earlier draft the same
+comparison gave p = 0.43 with only 3/5 seeds in the predicted direction: the
+result was real but untestable. The grid costs about eight minutes, so there is
+no reason to run it underpowered. `paired_tests()` in
+`mlp_amplification_study.py` computes these statistics as part of the run.
+
+**Model independence.** Rerunning the entire grid with a higher-capacity MLP
+client on identical partitions and schedules reproduces every delta within one
+standard deviation of the logistic-regression result — 0 of 18 conditions
+exceed it. The cost structure is model-independent.
+
+**A caveat worth stating.** At α=0.1 with K=3 the Dirichlet partition is
+genuinely extreme: in 8 of 30 seeds the positive-heavy silo holds more than 80%
+of the training set, so its departure removes most of the data. This is a real
+property of severe skew rather than a bug, but it inflates variance, and it is
+why the paired test matters. Restricting to seeds where the exiting silo holds
+at most half the training data leaves the conclusion intact (n=21, paired
+difference −0.041, p = 0.0002).
 
 ## Layout
 
@@ -62,6 +98,7 @@ code/
     consent_churn_study.ipynb    # executed: 3-regime study, 5 seeds, isolation test
     mlp_amplification_study.py   # runner: full churn grid, logreg AND MLP clients
     mlp_amplification.ipynb      # executed: model-capacity check results
+make_figs.py                     # rebuilds results/figures/ from the JSON
 results/                         # EVERYTHING GENERATED, in one place
   best_single_baseline_results.json   # saved centralized ranking
   mlp_amplification_results.json      # all 200 per-run metrics

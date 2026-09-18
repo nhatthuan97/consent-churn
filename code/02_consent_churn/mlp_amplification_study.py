@@ -8,7 +8,7 @@ logreg and a one-hidden-layer MLP (64 ReLU units, lr 0.05, chosen because it
 centralizes at AUROC 0.670 > logreg's 0.666) — on identical partitions and
 schedules, so every delta is an apples-to-apples pair.
 
-Grid per model (100 runs each; FedAvg, class-weighted, 40 rounds, K=3, 5 seeds):
+Grid per model (600 runs each; FedAvg, class-weighted, 40 rounds, K=3, 30 seeds):
   baselines      no-churn at alpha in {0.5, 0.1}
   experiment 1   transient / permanent(random) / permanent(biased) at
                  rates {0.1, 0.3, 0.5, 0.7}, alpha=0.5
@@ -39,7 +39,11 @@ from churn import (evaluate_run, no_churn, transient_schedule, permanent_schedul
                    matched_random_schedule)
 from experiment_setup import load_split_standardize, partition, results_path
 
-SEEDS = [0, 1, 2, 3, 4]
+# 30 seeds, not 5. The headline whole-silo vs count-matched contrast has a
+# paired sd of roughly 0.046; at n=5 that is ~2.5x the effect and the paired
+# test cannot resolve it (p~0.43). n=30 brings it to p~1e-4. The grid costs
+# about 8 minutes, so there is no reason to run underpowered.
+SEEDS = list(range(30))
 ROUNDS = 40
 RATES = [0.1, 0.3, 0.5, 0.7]
 ALPHAS = [0.5, 0.1]
@@ -142,6 +146,70 @@ def summarize(rows):
     return out
 
 
+def paired_tests(rows):
+    """The isolation test, done as a paired comparison rather than two means.
+
+    whole-silo exit and its count-matched control share a seed, hence an
+    identical partition and an identical number of patients removed, so they are
+    paired observations and the difference must be tested per seed. Reporting
+    only the two marginal means hides the pairing and overstates what a small
+    number of seeds can support: the paired sd here is several times the effect,
+    so n=5 leaves the central claim untestable.
+    """
+    from scipy import stats
+
+    base = {(r["model"], r["alpha"], r["seed"]): r["AUROC"] for r in rows
+            if r["regime"] == "none"}
+
+    def series(model, alpha, pred):
+        out = {}
+        for r in rows:
+            if r["model"] == model and r["alpha"] == alpha and pred(r):
+                out[r["seed"]] = r["AUROC"] - base[(model, alpha, r["seed"])]
+        return out
+
+    res = {}
+    for model in MODELS:
+        for alpha in ALPHAS:
+            ws = series(model, alpha, lambda r: r["regime"] == "whole_silo"
+                        and r.get("which") == "heavy")
+            mr = series(model, alpha, lambda r: r["regime"] == "matched")
+            seeds = sorted(set(ws) & set(mr))
+            if len(seeds) < 3:
+                continue
+            a = np.array([ws[s] for s in seeds]); b = np.array([mr[s] for s in seeds])
+            diff = a - b
+            t, pval = stats.ttest_rel(a, b)
+            try:
+                wp = float(stats.wilcoxon(a, b).pvalue)
+            except ValueError:
+                wp = float("nan")
+            lo, hi = stats.t.interval(0.95, len(diff) - 1,
+                                      loc=diff.mean(), scale=stats.sem(diff))
+            res[f"{model}_a{alpha}"] = dict(
+                n=len(seeds),
+                whole_silo_mean=float(a.mean()), whole_silo_sd=float(a.std(ddof=1)),
+                matched_mean=float(b.mean()), matched_sd=float(b.std(ddof=1)),
+                paired_diff=float(diff.mean()), paired_sd=float(diff.std(ddof=1)),
+                t=float(t), p_ttest=float(pval), p_wilcoxon=wp,
+                ci95=[float(lo), float(hi)],
+                n_correct_direction=int((diff < 0).sum()))
+    return res
+
+
+def print_paired(pt):
+    print("\n== Isolation test, paired by seed (the H2 claim) ==")
+    print(f"{'condition':<16}{'n':>4}{'whole-silo':>13}{'matched':>12}"
+          f"{'paired diff':>13}{'p (t)':>10}{'dir':>8}")
+    for k, v in pt.items():
+        print(f"{k:<16}{v['n']:>4}{v['whole_silo_mean']:>+13.4f}{v['matched_mean']:>+12.4f}"
+              f"{v['paired_diff']:>+13.4f}{v['p_ttest']:>10.4f}"
+              f"{v['n_correct_direction']:>5}/{v['n']}")
+        print(f"{'':<16}95% CI on the paired difference "
+              f"[{v['ci95'][0]:+.4f}, {v['ci95'][1]:+.4f}]   "
+              f"Wilcoxon p={v['p_wilcoxon']:.4f}")
+
+
 def print_summary(s):
     lr, mlp = s["logreg"], s["mlp"]
     print(f"\nno-churn baseline AUROC   logreg {lr['baseline_auroc']}   "
@@ -180,12 +248,14 @@ def main():
             if (i + 1) % 20 == 0:
                 print(f"  {i + 1}/{len(jobs)} done", flush=True)
     summary = summarize(rows)
+    paired = paired_tests(rows)
     RESULTS.write_text(json.dumps(dict(
         config=dict(seeds=SEEDS, rounds=ROUNDS, rates=RATES, alphas=ALPHAS, k=K,
                     models={k: v for k, v in MODELS.items()}),
-        summary=summary, runs=rows), indent=1))
+        summary=summary, paired_tests=paired, runs=rows), indent=1))
     print(f"\nwrote {RESULTS}")
     print_summary(summary)
+    print_paired(paired)
 
 
 if __name__ == "__main__":

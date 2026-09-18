@@ -9,11 +9,13 @@ abstract: >-
   patients revoke participation at any time, but the utility cost of that
   capability has not been measured. This work quantifies it on 30-day
   readmission prediction (UCI Diabetes 130-US hospitals, 101,766 encounters,
-  K=3 silos, 5 seeds), decomposing consent churn into three physically distinct
-  regimes. A count-matched isolation test shows that removing an entire
-  positive-heavy silo costs -0.059 AUROC while removing the same number of
-  patients at random costs -0.039: the damage is carried by who leaves rather
-  than how many leave. Rerunning the full grid with a higher-capacity MLP client
+  K=3 silos, 30 seeds), decomposing consent churn into three physically distinct
+  regimes. A count-matched isolation test, paired by seed so that both arms
+  share a partition and remove an identical number of patients, shows that
+  removing an entire positive-heavy silo costs 0.053 AUROC against 0.015 for the
+  same headcount drawn at random: a paired difference of -0.038 (95% CI -0.055
+  to -0.021, p = 0.0001). The damage is carried by who leaves rather than how
+  many leave. Rerunning the full grid with a higher-capacity MLP client
   reproduces every delta within one standard deviation, so the cost structure is
   model-independent.
 authors:
