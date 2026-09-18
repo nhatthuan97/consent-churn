@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: >-
+  If you use this code or the results in it, please cite the paper below.
+title: >-
+  Who Leaves Matters More Than How Many: The Utility Cost of Revocable Patient
+  Consent in Cross-Silo Federated Learning
+abstract: >-
+  Blockchain consent layers for federated healthcare machine learning let
+  patients revoke participation at any time, but the utility cost of that
+  capability has not been measured. This work quantifies it on 30-day
+  readmission prediction (UCI Diabetes 130-US hospitals, 101,766 encounters,
+  K=3 silos, 5 seeds), decomposing consent churn into three physically distinct
+  regimes. A count-matched isolation test shows that removing an entire
+  positive-heavy silo costs -0.059 AUROC while removing the same number of
+  patients at random costs -0.039: the damage is carried by who leaves rather
+  than how many leave. Rerunning the full grid with a higher-capacity MLP client
+  reproduces every delta within one standard deviation, so the cost structure is
+  model-independent.
+authors:
+  # TODO: confirm the given/family split and affiliation you publish under.
+  - family-names: Nhan
+    given-names: Thuan
+    # affiliation: "Middle Tennessee State University"   # <- confirm before use
+  - family-names: Poudel
+    given-names: Khem
+    affiliation: "Middle Tennessee State University"
+keywords:
+  - federated learning
+  - patient consent
+  - healthcare machine learning
+  - non-IID
+  - hospital readmission
+  - data governance
+repository-code: "https://github.com/nhatthuan97/consent-churn"
+license: # TODO: add an SPDX id (e.g. MIT, Apache-2.0) once chosen
+type: software

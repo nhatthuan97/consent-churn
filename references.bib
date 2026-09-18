@@ -1,0 +1,144 @@
+% References for "Who Leaves Matters More Than How Many".
+%
+% Every entry below was verified against the publisher or preprint server on
+% 2026-09-18 -- authors, venue, year and DOI/arXiv id checked against the record,
+% not reconstructed from memory. Reported metric values quoted in comments are
+% taken from the papers' own abstracts/results.
+
+% --------------------------------------------------------------------------- %
+% Dataset
+% --------------------------------------------------------------------------- %
+@article{strack2014impact,
+  author  = {Strack, Beata and DeShazo, Jonathan P. and Gennings, Chris and
+             Olmo, Juan L. and Ventura, Sebastian and Cios, Krzysztof J. and
+             Clore, John N.},
+  title   = {Impact of {HbA1c} Measurement on Hospital Readmission Rates:
+             Analysis of 70,000 Clinical Database Patient Records},
+  journal = {BioMed Research International},
+  volume  = {2014},
+  pages   = {1--11},
+  year    = {2014},
+  doi     = {10.1155/2014/781670},
+  note    = {Source publication for the UCI Diabetes 130-US hospitals dataset}
+}
+
+% --------------------------------------------------------------------------- %
+% Published results on the same dataset (the "ceiling" context)
+% --------------------------------------------------------------------------- %
+
+% Reports XGBoost AUC-ROC = 0.667 on 101,766 encounters, 80/20 split.
+% This -- not Liu et al. -- is the source of the 0.667 figure.
+@article{emijohnson2025predicting,
+  author  = {Emi-Johnson, Oluwatosin G. and Nkrumah, Kwabena J.},
+  title   = {Predicting 30-Day Hospital Readmission in Patients With Diabetes
+             Using Machine Learning on Electronic Health Record Data},
+  journal = {Cureus},
+  volume  = {17},
+  number  = {4},
+  pages   = {e82437},
+  year    = {2025},
+  doi     = {10.7759/cureus.82437}
+}
+
+% Reports XGBoost AUROC = 0.64 (0.64, 0.65) -- the highest of the six models it
+% tests. Does NOT evaluate CatBoost.
+@article{liu2024comparison,
+  author  = {Liu, Vincent B. and Sue, Laura Y. and Wu, Yingnian},
+  title   = {Comparison of Machine Learning Models for Predicting 30-Day
+             Readmission Rates for Patients with Diabetes},
+  journal = {Journal of Medical Artificial Intelligence},
+  volume  = {7},
+  year    = {2024},
+  doi     = {10.21037/jmai-24-70}
+}
+
+% Stacking ensemble, nested CV ROC-AUC = 0.664, calibrated AUC = 0.688.
+@article{salim2026machine,
+  author  = {Salim, S. S. and Ibrahim, A. A.},
+  title   = {A Machine Learning Approach for Predicting 30-Day Hospital
+             Readmission in Patients with Diabetes},
+  journal = {Healthcare},
+  volume  = {14},
+  number  = {9},
+  pages   = {1185},
+  year    = {2026},
+  doi     = {10.3390/healthcare14091185}
+}
+
+% Source of the "CatBoost ~0.70" figure. NOTE: published in International
+% Journal of Health Sciences (Universidad Tecnica de Manabi). Check that this
+% venue meets your submission's standard before leaning on it as "published
+% state of the art"; the Cureus and Healthcare entries above are the safer
+% anchors for the ceiling claim.
+@article{gandra2024predicting,
+  author  = {Gandra, Alekhya},
+  title   = {Predicting Hospital Readmissions in Diabetes Patients:
+             A Comparative Study of Machine Learning Models},
+  journal = {International Journal of Health Sciences},
+  volume  = {8},
+  number  = {3},
+  pages   = {289--297},
+  year    = {2024},
+  doi     = {10.53730/ijhs.v8n3.15189}
+}
+
+% --------------------------------------------------------------------------- %
+% Federated aggregation methods implemented in federated_methods.py
+% --------------------------------------------------------------------------- %
+@inproceedings{mcmahan2017communication,
+  author    = {McMahan, H. Brendan and Moore, Eider and Ramage, Daniel and
+               Hampson, Seth and Ag{\"u}era y Arcas, Blaise},
+  title     = {Communication-Efficient Learning of Deep Networks from
+               Decentralized Data},
+  booktitle = {Proceedings of the 20th International Conference on Artificial
+               Intelligence and Statistics (AISTATS)},
+  pages     = {1273--1282},
+  year      = {2017},
+  eprint    = {1602.05629},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{li2020federated,
+  author    = {Li, Tian and Sahu, Anit Kumar and Zaheer, Manzil and
+               Sanjabi, Maziar and Talwalkar, Ameet and Smith, Virginia},
+  title     = {Federated Optimization in Heterogeneous Networks},
+  booktitle = {Proceedings of Machine Learning and Systems (MLSys)},
+  volume    = {2},
+  pages     = {429--450},
+  year      = {2020},
+  eprint    = {1812.06127},
+  archivePrefix = {arXiv}
+}
+
+@article{hsu2019measuring,
+  author  = {Hsu, Tzu-Ming Harry and Qi, Hang and Brown, Matthew},
+  title   = {Measuring the Effects of Non-Identical Data Distribution for
+             Federated Visual Classification},
+  journal = {arXiv preprint arXiv:1909.06335},
+  year    = {2019},
+  eprint  = {1909.06335},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{reddi2021adaptive,
+  author    = {Reddi, Sashank and Charles, Zachary and Zaheer, Manzil and
+               Garrett, Zachary and Rush, Keith and Kone{\v{c}}n{\'y}, Jakub and
+               Kumar, Sanjiv and McMahan, H. Brendan},
+  title     = {Adaptive Federated Optimization},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+  eprint    = {2003.00295},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{karimireddy2020scaffold,
+  author    = {Karimireddy, Sai Praneeth and Kale, Satyen and Mohri, Mehryar and
+               Reddi, Sashank J. and Stich, Sebastian U. and Suresh, Ananda Theertha},
+  title     = {{SCAFFOLD}: Stochastic Controlled Averaging for Federated Learning},
+  booktitle = {Proceedings of the 37th International Conference on Machine
+               Learning (ICML)},
+  pages     = {5132--5143},
+  year      = {2020},
+  eprint    = {1910.06378},
+  archivePrefix = {arXiv}
+}

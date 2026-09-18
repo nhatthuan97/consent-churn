@@ -5,10 +5,18 @@ selects by threshold-free metrics (AUROC, PR-AUC) via 5-fold stratified CV, so
 the ranking is not an artifact of the 0.5 decision threshold. For the winning
 model it also reports a tuned operating point.
 
-Context: published state of the art on this dataset (30-day readmission) is
-~0.667 AUROC (XGBoost) to ~0.70 (CatBoost) -- Liu et al. 2024, and the 2025
-EHR-ML study -- so a well-tuned baseline here is expected to land ~0.67-0.70,
-not higher. The dataset signal ceiling is low; this benchmark documents it.
+Context: published results on this dataset (30-day readmission) cluster in a
+narrow band, so a well-tuned baseline is expected to land ~0.66-0.69, not
+higher. Verified against the sources (see ../references.bib):
+
+  XGBoost    AUC-ROC 0.667   Emi-Johnson & Nkrumah, Cureus 2025 (same 101,766
+                             encounters, 80/20 split)
+  XGBoost    AUROC   0.64    Liu et al., J Med Artif Intell 2024 (best of six
+                             models; does not test CatBoost)
+  stacking   AUC     0.664   Salim & Ibrahim, Healthcare 2026; 0.688 calibrated
+                             (nested CV)
+
+The dataset signal ceiling is genuinely low; this benchmark documents it.
 
 Run:  ~/venvs/ds/bin/python 01_baseline_fullscale/best_single_baseline.py
 """
@@ -183,7 +191,7 @@ def main():
     X, y, feat = load_xy()
     pos = y.mean()
     print(f"data {X.shape}  positive rate {pos:.4f}  scale_pos_weight {(1-pos)/pos:.2f}")
-    print(f"reference: base-rate PR-AUC = {pos:.3f}; published SOTA AUROC ~0.667-0.70\n")
+    print(f"reference: base-rate PR-AUC = {pos:.3f}; published AUROC on this dataset ~0.64-0.69\n")
 
     res, oof_store = benchmark_centralized(X, y)
     print("\n=== MODEL RANKING (5-fold CV, sorted by AUROC) ===")

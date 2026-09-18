@@ -4,6 +4,25 @@ Code and results for the paper **"Who Leaves Matters More Than How Many: The
 Utility Cost of Revocable Patient Consent in Cross-Silo Federated Learning"**
 (Nhan & Poudel, under review).
 
+## Citing
+
+Under review; no venue named until a decision. Cite as:
+
+```bibtex
+@misc{nhan2026wholeaves,
+  author = {Nhan, Thuan and Poudel, Khem},
+  title  = {Who Leaves Matters More Than How Many: The Utility Cost of
+            Revocable Patient Consent in Cross-Silo Federated Learning},
+  year   = {2026},
+  note   = {Manuscript under review},
+  howpublished = {\url{https://github.com/nhatthuan97/consent-churn}}
+}
+```
+
+`references.bib` holds the works this study builds on, each verified against the
+publisher of record rather than reconstructed from memory. `CITATION.cff` carries
+the same metadata in machine-readable form.
+
 ## What this measures
 
 A growing literature adds blockchain consent layers to federated healthcare
