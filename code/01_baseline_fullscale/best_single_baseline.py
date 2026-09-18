@@ -10,7 +10,7 @@ Context: published state of the art on this dataset (30-day readmission) is
 EHR-ML study -- so a well-tuned baseline here is expected to land ~0.67-0.70,
 not higher. The dataset signal ceiling is low; this benchmark documents it.
 
-Run:  conda run -n thesis python 01_baseline_fullscale/best_single_baseline.py
+Run:  ~/venvs/ds/bin/python 01_baseline_fullscale/best_single_baseline.py
 """
 from __future__ import annotations
 import json, time, warnings

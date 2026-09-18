@@ -15,7 +15,7 @@ Grid per model (100 runs each; FedAvg, class-weighted, 40 rounds, K=3, 5 seeds):
   experiment 2   whole-silo exit (pos-heavy / pos-light), alpha in {0.5, 0.1}
   experiment 3   count-matched random control for the pos-heavy exit
 
-Usage:  conda run -n thesis python mlp_amplification_study.py
+Usage:  ~/venvs/ds/bin/python mlp_amplification_study.py
 Writes mlp_amplification_results.json (all per-run rows + config) and prints
 the summary tables. Deterministic: same seeds -> same numbers on rerun.
 """
@@ -25,6 +25,7 @@ os.environ.setdefault("OMP_NUM_THREADS", "2")   # before numpy: keep workers lea
 
 import json
 import sys
+import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
@@ -185,7 +186,12 @@ def main():
     jobs = build_jobs()
     print(f"{len(jobs)} runs, {os.cpu_count()} cores", flush=True)
     rows = []
-    with ProcessPoolExecutor(max_workers=10) as ex:
+    # Workers read the module-level _DATA populated above. Python 3.14 changed
+    # the Linux default start method to forkserver, which re-imports this module
+    # and leaves _DATA empty; fork keeps the copy-on-write inheritance the
+    # archived runs used (and avoids pickling the design matrix to each worker).
+    with ProcessPoolExecutor(max_workers=10,
+                             mp_context=mp.get_context("fork")) as ex:
         for i, row in enumerate(ex.map(_run_one, jobs, chunksize=2)):
             rows.append(row)
             if (i + 1) % 20 == 0:

@@ -1,0 +1,23 @@
+# Environment this code is verified to run on (itx-box, venv ~/venvs/ds).
+# Python 3.14.7 on Linux.
+#
+# NOTE: on Python >= 3.14 the Linux default multiprocessing start method is
+# forkserver. code/02_consent_churn/mlp_amplification_study.py explicitly
+# requests a fork context so its worker processes inherit the preloaded
+# design matrix; do not remove that without also changing how _DATA is shared.
+
+numpy==2.5.3
+pandas==3.0.5
+scikit-learn==1.9.1
+scipy==1.18.1
+matplotlib==3.11.2
+xgboost==3.4.1
+lightgbm==4.7.0
+ucimlrepo==0.0.7
+
+# Notebook tooling
+jupyterlab==4.6.3
+jupytext==1.19.5
+nbformat==5.11.1
+nbconvert==7.17.1
+ipykernel==7.3.0

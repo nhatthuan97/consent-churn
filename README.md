@@ -48,11 +48,19 @@ figures/                         # result figures used in the paper
 
 ## Environment
 
+A plain virtualenv is enough; `requirements.txt` pins the versions the results
+were last verified against.
+
 ```bash
-conda create -n thesis python=3.11 -y
-conda run -n thesis pip install numpy pandas scikit-learn scipy matplotlib \
-    ucimlrepo jupyterlab nbformat nbconvert ipykernel xgboost lightgbm
+python3 -m venv ~/venvs/ds
+~/venvs/ds/bin/pip install -r requirements.txt
 ```
+
+**Python 3.14 note.** On Linux, Python 3.14 changed the default multiprocessing
+start method from `fork` to `forkserver`. `mlp_amplification_study.py` shares
+the preloaded design matrix with its workers through a module-level global, so
+it explicitly requests a `fork` context; under `forkserver` the workers re-import
+the module and see an empty global. Keep that context if you touch the runner.
 
 ## Reproducing
 
@@ -60,18 +68,37 @@ The dataset auto-downloads to `code/data/` on first run. From
 `code/01_baseline_fullscale/`:
 
 ```bash
-conda run -n thesis python best_single_baseline.py   # centralized benchmark
-conda run -n thesis python federated_methods.py      # 5 aggregators sanity sweep
+~/venvs/ds/bin/python best_single_baseline.py   # centralized benchmark
+~/venvs/ds/bin/python federated_methods.py      # 5 aggregators sanity sweep
 ```
 
 From `code/02_consent_churn/`:
 
 ```bash
-conda run -n thesis python churn.py                     # quick churn demo
-conda run -n thesis python mlp_amplification_study.py   # full 200-run grid
+~/venvs/ds/bin/python churn.py                     # quick churn demo
+~/venvs/ds/bin/python mlp_amplification_study.py   # full 200-run grid
 ```
 
+### Verified reproduction (2026-09-18)
+
+Rerun end to end on Python 3.14.7 / NumPy 2.5.3 / pandas 3.0.5 / scikit-learn
+1.9.1 / XGBoost 3.4.1 / LightGBM 4.7.0:
+
+| Artifact | Result |
+|---|---|
+| `mlp_amplification_results.json` (200 runs) | **byte-identical** to the archived copy |
+| `federated_methods.py` | reproduces the flat method comparison and the SCAFFOLD collapse at alpha=0.1 (AUROC 0.6246) |
+| `churn.py` | reproduces the regime ordering |
+| `best_single_baseline_results.json` | reproduces except **XGBoost AUROC 0.676882 -> 0.676166** (-7.2e-04) under XGBoost 3.4.1 |
+
+The XGBoost drift is a library-version effect, an order of magnitude below that
+model's own CV standard deviation (+/-0.0064). It does not move the ranking, the
+selected model, or the tuned threshold, all of which reproduce exactly. The
+committed JSON is kept as the archived artifact rather than being overwritten.
+
 The executed notebooks contain the studies with embedded results and
-findings. Everything is pure NumPy and **deterministic to the seed**: in our
-replication, rerunning stored configurations reproduces the archived JSON
-results bit-exactly across NumPy/scikit-learn versions.
+findings. Everything is pure NumPy and **deterministic to the seed**: rerunning
+`mlp_amplification_study.py` regenerates `mlp_amplification_results.json`
+**byte-for-byte identical** to the archived copy. Last verified 2026-09-18 on
+Python 3.14.7 with NumPy 2.5.3 / pandas 3.0.5 / scikit-learn 1.9.1 — a stack
+well ahead of the one the results were originally produced on.
