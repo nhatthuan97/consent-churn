@@ -23,6 +23,23 @@ import numpy as np
 # best_single_baseline owns the preprocessing (load_xy / NUMERIC).
 sys.path.insert(0, str(Path(__file__).resolve().parent / "01_baseline_fullscale"))
 
+# --------------------------------------------------------------------------- #
+# Where generated artifacts go. Everything a script produces lands under
+# <repo>/results/ -- the JSON metric dumps at the top, the figures built from
+# them in results/figures/. The LaTeX documents read straight out of that same
+# directory, so a rerun of the experiments updates the papers with no copying
+# and nothing to keep in sync by hand.
+# --------------------------------------------------------------------------- #
+CODE_ROOT = Path(__file__).resolve().parent
+RESULTS_DIR = CODE_ROOT.parent / "results"
+FIGURES_DIR = RESULTS_DIR / "figures"
+
+
+def results_path(name: str) -> Path:
+    """Absolute path for a generated artifact, creating results/ if needed."""
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    return RESULTS_DIR / name
+
 
 def load_split_standardize(test_size=0.2, seed=0):
     """Load the cohort, split it stratified, standardise the numeric columns.

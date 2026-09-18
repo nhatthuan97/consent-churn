@@ -31,23 +31,27 @@ deviation: the cost structure is model-independent.
 ```
 code/
   data/                          # raw data (auto-downloaded on first run)
-  experiment_setup.py            # SHARED: the split/standardise step and the
-                                 #   Dirichlet silo partition. One definition,
-                                 #   used by every experiment below.
+  experiment_setup.py            # SHARED: split/standardise, the Dirichlet silo
+                                 #   partition, and where results/ lives.
   01_baseline_fullscale/
     best_single_baseline.py      # preprocessing + multi-model centralized benchmark
     federated_methods.py         # 5 FL aggregators; logreg + MLP flat-vector clients
     baseline_and_federated_methods.ipynb   # executed: ceiling/floor + 5 methods @ K=3
     baseline_full_scale_accuracy.ipynb     # exploratory sweeps
-    best_single_baseline_results.json      # saved centralized ranking
   02_consent_churn/
     churn.py                     # consent-churn schedules (3 regimes + control) + runner
     consent_churn_study.ipynb    # executed: 3-regime study, 5 seeds, isolation test
     mlp_amplification_study.py   # runner: full churn grid, logreg AND MLP clients
     mlp_amplification.ipynb      # executed: model-capacity check results
-    mlp_amplification_results.json  # all 200 per-run metrics
-figures/                         # result figures used in the paper
+results/                         # EVERYTHING GENERATED, in one place
+  best_single_baseline_results.json   # saved centralized ranking
+  mlp_amplification_results.json      # all 200 per-run metrics
+  figures/                       # result figures used in the paper
 ```
+
+Scripts write only into `results/`; nothing generated is stored beside the code
+that produced it, so a rerun refreshes every downstream artifact at once.
+
 
 ## Environment
 

@@ -185,7 +185,10 @@ def main():
     print(f"  @{thr:.3f} (F1-opt): recall={recall_score(y, yh_t):.3f}  "
           f"precision={precision_score(y, yh_t):.3f}  F1={f1_score(y, yh_t):.3f}")
 
-    out = HERE / "best_single_baseline_results.json"
+    import sys as _sys
+    _sys.path.insert(0, str(HERE.parent))
+    from experiment_setup import results_path
+    out = results_path("best_single_baseline_results.json")
     with open(out, "w") as f:
         json.dump({"ranking": res.to_dict(orient="records"),
                    "best_model": best,

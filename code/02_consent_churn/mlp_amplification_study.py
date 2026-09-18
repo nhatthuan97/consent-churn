@@ -37,7 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from churn import (evaluate_run, no_churn, transient_schedule, permanent_schedule,
                    biased_permanent_schedule, whole_silo_schedule,
                    matched_random_schedule)
-from experiment_setup import load_split_standardize, partition
+from experiment_setup import load_split_standardize, partition, results_path
 
 SEEDS = [0, 1, 2, 3, 4]
 ROUNDS = 40
@@ -46,7 +46,7 @@ ALPHAS = [0.5, 0.1]
 K = 3
 MODELS = {"logreg": dict(model="logreg", hidden=32, lr=0.1),
           "mlp":    dict(model="mlp", hidden=64, lr=0.05)}
-RESULTS = Path(__file__).resolve().parent / "mlp_amplification_results.json"
+RESULTS = results_path("mlp_amplification_results.json")
 
 # set in _init_worker / main; inherited by fork
 _DATA = {}
