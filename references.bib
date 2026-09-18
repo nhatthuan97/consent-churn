@@ -1,144 +1,252 @@
 % References for "Who Leaves Matters More Than How Many".
 %
-% Every entry below was verified against the publisher or preprint server on
-% 2026-09-18 -- authors, venue, year and DOI/arXiv id checked against the record,
-% not reconstructed from memory. Reported metric values quoted in comments are
-% taken from the papers' own abstracts/results.
+% Merged from the August 2026 draft's bibliography and verified against the
+% publisher of record (Crossref / arXiv / the journal's own page) on 2026-09-18.
+% Nothing here is reconstructed from memory. Where the draft's entry disagreed
+% with the record, the correction is noted inline.
 
-% --------------------------------------------------------------------------- %
-% Dataset
-% --------------------------------------------------------------------------- %
-@article{strack2014impact,
-  author  = {Strack, Beata and DeShazo, Jonathan P. and Gennings, Chris and
-             Olmo, Juan L. and Ventura, Sebastian and Cios, Krzysztof J. and
-             Clore, John N.},
-  title   = {Impact of {HbA1c} Measurement on Hospital Readmission Rates:
-             Analysis of 70,000 Clinical Database Patient Records},
-  journal = {BioMed Research International},
-  volume  = {2014},
-  pages   = {1--11},
-  year    = {2014},
-  doi     = {10.1155/2014/781670},
-  note    = {Source publication for the UCI Diabetes 130-US hospitals dataset}
-}
-
-% --------------------------------------------------------------------------- %
-% Published results on the same dataset (the "ceiling" context)
-% --------------------------------------------------------------------------- %
-
-% Reports XGBoost AUC-ROC = 0.667 on 101,766 encounters, 80/20 split.
-% This -- not Liu et al. -- is the source of the 0.667 figure.
-@article{emijohnson2025predicting,
-  author  = {Emi-Johnson, Oluwatosin G. and Nkrumah, Kwabena J.},
-  title   = {Predicting 30-Day Hospital Readmission in Patients With Diabetes
-             Using Machine Learning on Electronic Health Record Data},
-  journal = {Cureus},
-  volume  = {17},
-  number  = {4},
-  pages   = {e82437},
-  year    = {2025},
-  doi     = {10.7759/cureus.82437}
-}
-
-% Reports XGBoost AUROC = 0.64 (0.64, 0.65) -- the highest of the six models it
-% tests. Does NOT evaluate CatBoost.
-@article{liu2024comparison,
-  author  = {Liu, Vincent B. and Sue, Laura Y. and Wu, Yingnian},
-  title   = {Comparison of Machine Learning Models for Predicting 30-Day
-             Readmission Rates for Patients with Diabetes},
-  journal = {Journal of Medical Artificial Intelligence},
-  volume  = {7},
-  year    = {2024},
-  doi     = {10.21037/jmai-24-70}
-}
-
-% Stacking ensemble, nested CV ROC-AUC = 0.664, calibrated AUC = 0.688.
-@article{salim2026machine,
-  author  = {Salim, S. S. and Ibrahim, A. A.},
-  title   = {A Machine Learning Approach for Predicting 30-Day Hospital
-             Readmission in Patients with Diabetes},
-  journal = {Healthcare},
-  volume  = {14},
-  number  = {9},
-  pages   = {1185},
-  year    = {2026},
-  doi     = {10.3390/healthcare14091185}
-}
-
-% Source of the "CatBoost ~0.70" figure. NOTE: published in International
-% Journal of Health Sciences (Universidad Tecnica de Manabi). Check that this
-% venue meets your submission's standard before leaning on it as "published
-% state of the art"; the Cureus and Healthcare entries above are the safer
-% anchors for the ceiling claim.
-@article{gandra2024predicting,
-  author  = {Gandra, Alekhya},
-  title   = {Predicting Hospital Readmissions in Diabetes Patients:
-             A Comparative Study of Machine Learning Models},
-  journal = {International Journal of Health Sciences},
-  volume  = {8},
-  number  = {3},
-  pages   = {289--297},
-  year    = {2024},
-  doi     = {10.53730/ijhs.v8n3.15189}
-}
-
-% --------------------------------------------------------------------------- %
-% Federated aggregation methods implemented in federated_methods.py
-% --------------------------------------------------------------------------- %
+% =========================================================================== %
+% Federated learning: foundations and heterogeneity
+% =========================================================================== %
 @inproceedings{mcmahan2017communication,
   author    = {McMahan, H. Brendan and Moore, Eider and Ramage, Daniel and
                Hampson, Seth and Ag{\"u}era y Arcas, Blaise},
   title     = {Communication-Efficient Learning of Deep Networks from
                Decentralized Data},
-  booktitle = {Proceedings of the 20th International Conference on Artificial
-               Intelligence and Statistics (AISTATS)},
-  pages     = {1273--1282},
-  year      = {2017},
-  eprint    = {1602.05629},
-  archivePrefix = {arXiv}
+  booktitle = {Proc.\ 20th Int.\ Conf.\ Artificial Intelligence and Statistics
+               (AISTATS)}, series = {PMLR}, volume = {54},
+  pages     = {1273--1282}, year = {2017},
+  eprint    = {1602.05629}, archivePrefix = {arXiv}
+}
+
+@article{kairouz2021advances,
+  author  = {Kairouz, Peter and McMahan, H. Brendan and others},
+  title   = {Advances and Open Problems in Federated Learning},
+  journal = {Foundations and Trends in Machine Learning},
+  volume  = {14}, number = {1--2}, pages = {1--210}, year = {2021},
+  doi     = {10.1561/2200000083}
 }
 
 @inproceedings{li2020federated,
   author    = {Li, Tian and Sahu, Anit Kumar and Zaheer, Manzil and
                Sanjabi, Maziar and Talwalkar, Ameet and Smith, Virginia},
   title     = {Federated Optimization in Heterogeneous Networks},
-  booktitle = {Proceedings of Machine Learning and Systems (MLSys)},
-  volume    = {2},
-  pages     = {429--450},
-  year      = {2020},
-  eprint    = {1812.06127},
-  archivePrefix = {arXiv}
+  booktitle = {Proc.\ Machine Learning and Systems (MLSys)},
+  volume    = {2}, pages = {429--450}, year = {2020},
+  eprint    = {1812.06127}, archivePrefix = {arXiv}
 }
 
 @article{hsu2019measuring,
   author  = {Hsu, Tzu-Ming Harry and Qi, Hang and Brown, Matthew},
   title   = {Measuring the Effects of Non-Identical Data Distribution for
              Federated Visual Classification},
-  journal = {arXiv preprint arXiv:1909.06335},
-  year    = {2019},
-  eprint  = {1909.06335},
-  archivePrefix = {arXiv}
+  journal = {arXiv preprint arXiv:1909.06335}, year = {2019},
+  eprint  = {1909.06335}, archivePrefix = {arXiv}
 }
 
 @inproceedings{reddi2021adaptive,
-  author    = {Reddi, Sashank and Charles, Zachary and Zaheer, Manzil and
+  author    = {Reddi, Sashank J. and Charles, Zachary and Zaheer, Manzil and
                Garrett, Zachary and Rush, Keith and Kone{\v{c}}n{\'y}, Jakub and
                Kumar, Sanjiv and McMahan, H. Brendan},
   title     = {Adaptive Federated Optimization},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2021},
-  eprint    = {2003.00295},
-  archivePrefix = {arXiv}
+  booktitle = {Int.\ Conf.\ Learning Representations (ICLR)}, year = {2021},
+  eprint    = {2003.00295}, archivePrefix = {arXiv}
 }
 
 @inproceedings{karimireddy2020scaffold,
   author    = {Karimireddy, Sai Praneeth and Kale, Satyen and Mohri, Mehryar and
                Reddi, Sashank J. and Stich, Sebastian U. and Suresh, Ananda Theertha},
   title     = {{SCAFFOLD}: Stochastic Controlled Averaging for Federated Learning},
-  booktitle = {Proceedings of the 37th International Conference on Machine
-               Learning (ICML)},
-  pages     = {5132--5143},
-  year      = {2020},
-  eprint    = {1910.06378},
-  archivePrefix = {arXiv}
+  booktitle = {Proc.\ 37th Int.\ Conf.\ Machine Learning (ICML)},
+  series    = {PMLR}, volume = {119}, pages = {5132--5143}, year = {2020},
+  eprint    = {1910.06378}, archivePrefix = {arXiv}
+}
+
+% NOTE: the draft cited this as "Towards understanding biased client selection
+% in federated learning", AISTATS 2022. The arXiv record (2010.01243) carries the
+% title below; the AISTATS 2022 version is the same line of work by the same
+% authors. Check which title the camera-ready uses before submitting.
+@inproceedings{cho2022client,
+  author    = {Cho, Yae Jee and Wang, Jianyu and Joshi, Gauri},
+  title     = {Client Selection in Federated Learning: Convergence Analysis and
+               Power-of-Choice Selection Strategies},
+  booktitle = {Proc.\ 25th Int.\ Conf.\ Artificial Intelligence and Statistics
+               (AISTATS)}, series = {PMLR}, volume = {151}, year = {2022},
+  eprint    = {2010.01243}, archivePrefix = {arXiv}
+}
+
+% =========================================================================== %
+% Federated learning in medicine
+% =========================================================================== %
+@article{rieke2020future,
+  author  = {Rieke, Nicola and Hancox, Jonny and Li, Wenqi and Milletar{\`i}, Fausto
+             and Roth, Holger R. and Albarqouni, Shadi and Bakas, Spyridon and
+             Galtier, Mathieu N. and Landman, Bennett A. and Maier-Hein, Klaus and others},
+  title   = {The Future of Digital Health with Federated Learning},
+  journal = {npj Digital Medicine}, volume = {3}, pages = {119}, year = {2020},
+  doi     = {10.1038/s41746-020-00323-1}
+}
+
+@article{sheller2020federated,
+  author  = {Sheller, Micah J. and Edwards, Brandon and Reina, G. Anthony and
+             Martin, Jason and Pati, Sarthak and Kotrotsou, Aikaterini and
+             Milchenko, Mikhail and Xu, Weilin and Marcus, Daniel and
+             Colen, Rivka R. and Bakas, Spyridon},
+  title   = {Federated Learning in Medicine: Facilitating Multi-Institutional
+             Collaborations without Sharing Patient Data},
+  journal = {Scientific Reports}, volume = {10}, pages = {12598}, year = {2020},
+  doi     = {10.1038/s41598-020-69250-1}
+}
+
+% =========================================================================== %
+% Blockchain consent management in healthcare
+% =========================================================================== %
+@inproceedings{azaria2016medrec,
+  author    = {Azaria, Asaph and Ekblaw, Ariel and Vieira, Thiago and Lippman, Andrew},
+  title     = {{MedRec}: Using Blockchain for Medical Data Access and Permission
+               Management},
+  booktitle = {Proc.\ 2nd Int.\ Conf.\ Open and Big Data (OBD)},
+  pages     = {25--30}, year = {2016},
+  doi       = {10.1109/OBD.2016.11}
+}
+
+@article{yue2016healthcare,
+  author  = {Yue, Xiao and Wang, Huiju and Jin, Dawei and Li, Mingqiang and Jiang, Wei},
+  title   = {Healthcare Data Gateways: Found Healthcare Intelligence on Blockchain
+             with Novel Privacy Risk Control},
+  journal = {Journal of Medical Systems}, volume = {40}, number = {10},
+  pages   = {218}, year = {2016},
+  doi     = {10.1007/s10916-016-0574-6}
+}
+
+@article{kuo2017blockchain,
+  author  = {Kuo, Tsung-Ting and Kim, Hyeon-Eui and Ohno-Machado, Lucila},
+  title   = {Blockchain Distributed Ledger Technologies for Biomedical and
+             Health Care Applications},
+  journal = {Journal of the American Medical Informatics Association},
+  volume  = {24}, number = {6}, pages = {1211--1220}, year = {2017},
+  doi     = {10.1093/jamia/ocx068}
+}
+
+% CORRECTED. The draft cited this systematic review as
+%   "I. Radanovic et al., J. Biomedical Informatics, vol. 118, p. 103778, 2021"
+% That is wrong on three counts: the authors are Kakarlapudi and Mahmoud, the
+% venue is Healthcare (MDPI), and J. Biomed. Inform. 118:103778 is an unrelated
+% paper (Harerimana et al. on length-of-stay forecasting). Verified via DOI.
+@article{kakarlapudi2021systematic,
+  author  = {Kakarlapudi, Prasanth Varma and Mahmoud, Qusay H.},
+  title   = {A Systematic Review of Blockchain for Consent Management},
+  journal = {Healthcare}, volume = {9}, number = {2}, pages = {137}, year = {2021},
+  doi     = {10.3390/healthcare9020137}
+}
+
+@inproceedings{nhan2024towards,
+  author    = {Nhan, Thuan and Upadhyay, Kritagya and Poudel, Khem},
+  title     = {Towards Patient-Centric Healthcare: Leveraging Blockchain for
+               Electronic Health Records},
+  booktitle = {Proc.\ 2024 Computers and People Research Conf.\ (ACM SIGMIS-CPR)},
+  year      = {2024}
+}
+
+% =========================================================================== %
+% Unlearning and privacy
+% =========================================================================== %
+@inproceedings{liu2021federaser,
+  author    = {Liu, Gaoyang and Ma, Xiaoqiang and Yang, Yang and Wang, Chen and Liu, Jiangchuan},
+  title     = {{FedEraser}: Enabling Efficient Client-Level Data Removal from
+               Federated Learning Models},
+  booktitle = {Proc.\ IEEE/ACM 29th Int.\ Symp.\ Quality of Service (IWQoS)},
+  year      = {2021},
+  doi       = {10.1109/IWQOS52092.2021.9521274}
+}
+
+@article{halimi2022federated,
+  author  = {Halimi, Anisa and Kadhe, Swanand and Rawat, Ambrish and Baracaldo, Nathalie},
+  title   = {Federated Unlearning: How to Efficiently Erase a Client in
+             Federated Learning?},
+  journal = {arXiv preprint arXiv:2207.05521}, year = {2022},
+  eprint  = {2207.05521}, archivePrefix = {arXiv}
+}
+
+@article{geyer2018differentially,
+  author  = {Geyer, Robin C. and Klein, Tassilo and Nabi, Moin},
+  title   = {Differentially Private Federated Learning: A Client Level Perspective},
+  journal = {arXiv preprint arXiv:1712.07557}, year = {2018},
+  eprint  = {1712.07557}, archivePrefix = {arXiv}
+}
+
+@inproceedings{bonawitz2017practical,
+  author    = {Bonawitz, Keith and Ivanov, Vladimir and Kreuter, Ben and
+               Marcedone, Antonio and McMahan, H. Brendan and Patel, Sarvar and
+               Ramage, Daniel and Segal, Aaron and Seth, Karn},
+  title     = {Practical Secure Aggregation for Privacy-Preserving Machine Learning},
+  booktitle = {Proc.\ ACM SIGSAC Conf.\ Computer and Communications Security (CCS)},
+  pages     = {1175--1191}, year = {2017},
+  doi       = {10.1145/3133956.3133982}
+}
+
+% =========================================================================== %
+% Regulation
+% =========================================================================== %
+@misc{gdpr2016article17,
+  author       = {{European Parliament and Council}},
+  title        = {Regulation (EU) 2016/679 (General Data Protection Regulation),
+                  Article 17: Right to Erasure},
+  howpublished = {Official Journal of the European Union, L119},
+  year         = {2016}
+}
+
+% =========================================================================== %
+% The cohort and published results on it
+% =========================================================================== %
+@article{strack2014impact,
+  author  = {Strack, Beata and DeShazo, Jonathan P. and Gennings, Chris and
+             Olmo, Juan L. and Ventura, Sebastian and Cios, Krzysztof J. and
+             Clore, John N.},
+  title   = {Impact of {HbA1c} Measurement on Hospital Readmission Rates:
+             Analysis of 70,000 Clinical Database Patient Records},
+  journal = {BioMed Research International}, volume = {2014},
+  pages   = {781670}, year = {2014},
+  doi     = {10.1155/2014/781670},
+  note    = {Source publication for the UCI Diabetes 130-US hospitals dataset}
+}
+
+% Reports XGBoost AUROC 0.64 (0.64, 0.65), the best of the models it tests.
+% NOTE: the draft says "across eleven models"; the paper reports six
+% (RF, XGBoost, LSTM, AdaBoost, logistic regression, MLP). Worth re-checking.
+@article{liu2024comparison,
+  author  = {Liu, Vincent B. and Sue, Laura Y. and Wu, Yingnian},
+  title   = {Comparison of Machine Learning Models for Predicting 30-Day
+             Readmission Rates for Patients with Diabetes},
+  journal = {Journal of Medical Artificial Intelligence}, volume = {7},
+  pages   = {23}, year = {2024},
+  doi     = {10.21037/jmai-24-70}
+}
+
+% Reports XGBoost AUC-ROC 0.667 on the same 101,766 encounters, 80/20 split.
+@article{emijohnson2025predicting,
+  author  = {Emi-Johnson, Oluwatosin G. and Nkrumah, Kwabena J.},
+  title   = {Predicting 30-Day Hospital Readmission in Patients with Diabetes
+             Using Machine Learning on Electronic Health Record Data},
+  journal = {Cureus}, volume = {17}, number = {4}, pages = {e82437}, year = {2025},
+  doi     = {10.7759/cureus.82437}
+}
+
+@article{ramakrishnaiah2025ehrml,
+  author  = {Ramakrishnaiah, Yashpal and Macesic, Nenad and Webb, Geoffrey I. and
+             Peleg, Anton Y. and Tyagi, Sonika},
+  title   = {{EHR-ML}: A Data-Driven Framework for Designing Machine Learning
+             Applications with Electronic Health Records},
+  journal = {International Journal of Medical Informatics}, volume = {196},
+  pages   = {105816}, year = {2025},
+  doi     = {10.1016/j.ijmedinf.2025.105816}
+}
+
+% Stacking ensemble, nested-CV ROC-AUC 0.664, calibrated 0.688.
+@article{salim2026machine,
+  author  = {Salim, S. S. and Ibrahim, A. A.},
+  title   = {A Machine Learning Approach for Predicting 30-Day Hospital
+             Readmission in Patients with Diabetes},
+  journal = {Healthcare}, volume = {14}, number = {9}, pages = {1185}, year = {2026},
+  doi     = {10.3390/healthcare14091185}
 }
