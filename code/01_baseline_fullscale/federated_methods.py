@@ -175,31 +175,18 @@ METHODS = ["fedavg", "fedprox", "fedavgm", "fedadam", "scaffold"]
 
 if __name__ == "__main__":
     # standalone sanity check: IID should ~match centralized; skew should hurt
-    import warnings; warnings.filterwarnings("ignore")
-    from sklearn.model_selection import train_test_split
+    import sys, warnings; warnings.filterwarnings("ignore")
+    from pathlib import Path
     from sklearn.metrics import roc_auc_score
-    from best_single_baseline import load_xy, NUMERIC
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from experiment_setup import load_split_standardize, partition
 
-    X, y, feat = load_xy()
-    num_idx = [i for i, n in enumerate(feat) if n in NUMERIC]
-    Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, stratify=y, random_state=0)
-    mu = Xtr[:, num_idx].mean(0); sd = Xtr[:, num_idx].std(0) + 1e-8
-    Xtr = Xtr.copy(); Xte = Xte.copy()
-    Xtr[:, num_idx] = (Xtr[:, num_idx] - mu) / sd
-    Xte[:, num_idx] = (Xte[:, num_idx] - mu) / sd
-    nf = X.shape[1]
-
-    def partition(y, k, alpha, seed=0):
-        rng = np.random.default_rng(seed); silos = [[] for _ in range(k)]
-        for c in np.unique(y):
-            idx = rng.permutation(np.where(y == c)[0]); pr = rng.dirichlet(alpha * np.ones(k))
-            cuts = (np.cumsum(pr) * len(idx)).astype(int)[:-1]
-            for s, ch in enumerate(np.split(idx, cuts)): silos[s].extend(ch.tolist())
-        return [np.sort(np.array(s, int)) for s in silos]
+    d = load_split_standardize()
+    Xtr, ytr, Xte, yte, nf = d["Xtr"], d["ytr"], d["Xte"], d["yte"], d["nf"]
 
     for alpha in (10.0, 0.5, 0.1):
         silos = partition(ytr, 3, alpha, 0)
         print(f"\nalpha={alpha}")
         for meth in METHODS:
-            p = federated_train(Xtr, ytr, silos, Xte, method=meth, nf=nf, seed=0)
-            print(f"  {meth:<10s} AUROC={roc_auc_score(yte, p):.4f}")
+            p_ = federated_train(Xtr, ytr, silos, Xte, method=meth, nf=nf, seed=0)
+            print(f"  {meth:<10s} AUROC={roc_auc_score(yte, p_):.4f}")

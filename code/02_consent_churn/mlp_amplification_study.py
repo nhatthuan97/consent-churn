@@ -32,10 +32,12 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "01_baseline_fullscale"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from churn import (evaluate_run, no_churn, transient_schedule, permanent_schedule,
                    biased_permanent_schedule, whole_silo_schedule,
                    matched_random_schedule)
+from experiment_setup import load_split_standardize, partition
 
 SEEDS = [0, 1, 2, 3, 4]
 ROUNDS = 40
@@ -51,26 +53,7 @@ _DATA = {}
 
 
 def _load_data():
-    from sklearn.model_selection import train_test_split
-    from best_single_baseline import load_xy, NUMERIC
-    X, y, feat = load_xy()
-    num_idx = [i for i, n in enumerate(feat) if n in NUMERIC]
-    Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, stratify=y,
-                                          random_state=0)
-    mu = Xtr[:, num_idx].mean(0); sd = Xtr[:, num_idx].std(0) + 1e-8
-    Xtr = Xtr.copy(); Xte = Xte.copy()
-    Xtr[:, num_idx] = (Xtr[:, num_idx] - mu) / sd
-    Xte[:, num_idx] = (Xte[:, num_idx] - mu) / sd
-    return dict(Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, nf=X.shape[1])
-
-
-def partition(y, k, alpha, seed=0):
-    rng = np.random.default_rng(seed); silos = [[] for _ in range(k)]
-    for c in np.unique(y):
-        idx = rng.permutation(np.where(y == c)[0]); pr = rng.dirichlet(alpha * np.ones(k))
-        cuts = (np.cumsum(pr) * len(idx)).astype(int)[:-1]
-        for s, ch in enumerate(np.split(idx, cuts)): silos[s].extend(ch.tolist())
-    return [np.sort(np.array(s, int)) for s in silos]
+    return load_split_standardize()
 
 
 def _build_schedule(spec, silos, ytr, seed):

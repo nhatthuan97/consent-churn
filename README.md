@@ -31,6 +31,9 @@ deviation: the cost structure is model-independent.
 ```
 code/
   data/                          # raw data (auto-downloaded on first run)
+  experiment_setup.py            # SHARED: the split/standardise step and the
+                                 #   Dirichlet silo partition. One definition,
+                                 #   used by every experiment below.
   01_baseline_fullscale/
     best_single_baseline.py      # preprocessing + multi-model centralized benchmark
     federated_methods.py         # 5 FL aggregators; logreg + MLP flat-vector clients
