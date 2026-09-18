@@ -66,8 +66,25 @@ def _collapse(s, min_frac=0.01):
     return s.where(s.isin(set(f[f >= min_frac].index)), "Other")
 
 
+def _ensure_data():
+    """Fetch the cohort on first use.
+
+    Every entry point funnels through load_xy(), so doing the download here is
+    what makes a clean checkout runnable: scripts and notebooks alike work with
+    no manual data step. UCI id 296 = Diabetes 130-US hospitals, 1999-2008.
+    """
+    if DATA.exists():
+        return DATA
+    DATA.parent.mkdir(parents=True, exist_ok=True)
+    from ucimlrepo import fetch_ucirepo
+    print(f"downloading UCI Diabetes 130-US-hospitals -> {DATA}", flush=True)
+    ds = fetch_ucirepo(id=296)
+    pd.concat([ds.data.features, ds.data.targets], axis=1).to_csv(DATA, index=False)
+    return DATA
+
+
 def load_xy():
-    df = pd.read_csv(DATA, low_memory=False)
+    df = pd.read_csv(_ensure_data(), low_memory=False)
     y = (df["readmitted"].astype(str) == "<30").astype(np.int64).to_numpy()
     d = df.drop(columns=["readmitted"] + [c for c in DROP if c in df])
     for c in DIAG:

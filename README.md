@@ -86,6 +86,20 @@ From `code/02_consent_churn/`:
 ~/venvs/ds/bin/python mlp_amplification_study.py   # full 200-run grid
 ```
 
+### Cost to reproduce
+
+Everything is CPU-only NumPy; no GPU is needed and nothing runs for hours.
+Measured on 16 cores (the grid uses 10 workers):
+
+| Command | Wall clock |
+|---|---|
+| `best_single_baseline.py` | ~30 s |
+| `mlp_amplification_study.py` (all 200 runs) | **~80 s** |
+| `churn.py`, `federated_methods.py` | ~1-2 min each |
+
+The dataset (~16 MB) downloads itself from the UCI repository the first time any
+entry point loads it, so a clean checkout needs no manual data step.
+
 ### Verified reproduction (2026-09-18)
 
 Rerun end to end on Python 3.14.7 / NumPy 2.5.3 / pandas 3.0.5 / scikit-learn
@@ -103,9 +117,11 @@ model's own CV standard deviation (+/-0.0064). It does not move the ranking, the
 selected model, or the tuned threshold, all of which reproduce exactly. The
 committed JSON is kept as the archived artifact rather than being overwritten.
 
-The executed notebooks contain the studies with embedded results and
-findings. Everything is pure NumPy and **deterministic to the seed**: rerunning
-`mlp_amplification_study.py` regenerates `mlp_amplification_results.json`
-**byte-for-byte identical** to the archived copy. Last verified 2026-09-18 on
-Python 3.14.7 with NumPy 2.5.3 / pandas 3.0.5 / scikit-learn 1.9.1 — a stack
-well ahead of the one the results were originally produced on.
+This was checked the way a reviewer would: clone the repository fresh, build a
+new virtualenv from `requirements.txt`, and run the grid. It downloaded the data
+itself and regenerated `mlp_amplification_results.json` byte-for-byte identical
+to the archived copy, on a software stack well ahead of the one the results were
+originally produced on.
+
+The executed notebooks carry their embedded results, so the studies and findings
+can be read without running anything.
